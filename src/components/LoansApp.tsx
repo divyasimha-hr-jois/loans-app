@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Sidebar, MobileMenuButton } from "./Sidebar";
-import { LoansTable } from "./LoansTable";
+import { LoansTable, allLoanData, LoanData } from "./LoansTable";
 import { LoanCalculator } from "./LoanCalculator";
 import { LoanTabs } from "./LoanTabs";
+import { LoanDetailsModal } from "./LoanDetailsModal";
 import { Button } from "@/components/ui/button";
 import { Moon, Sun, HelpCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -12,17 +13,77 @@ import { cn } from "@/lib/utils";
 export default function App() {
   const [darkMode, setDarkMode] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [activeTab, setActiveTab] = useState("all");
+  const [selectedLoan, setSelectedLoan] = useState<LoanData | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const toggleDarkMode = () => {
     setDarkMode(!darkMode);
     document.documentElement.classList.toggle("dark");
   };
 
+  // Filter loans based on active tab
+  const filteredLoans = useMemo(() => {
+    if (activeTab === "all") {
+      return allLoanData;
+    }
+    return allLoanData.filter(loan => loan.loanType.includes(activeTab));
+  }, [activeTab]);
+
+  const handleTabChange = (tab: string) => {
+    setActiveTab(tab);
+  };
+
+  const handleDetailsClick = (loan: LoanData) => {
+    setSelectedLoan(loan);
+    setIsModalOpen(true);
+  };
+
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+    setSelectedLoan(null);
+  };
+
+  // Get tab-specific description
+  const getTabDescription = () => {
+    switch (activeTab) {
+      case "personal":
+        return "Find the best personal loans for your individual needs, from debt consolidation to major purchases.";
+      case "auto":
+        return "Compare auto loan rates and terms from top lenders to finance your next vehicle purchase.";
+      case "student":
+        return "Explore student loan options to fund your education with competitive rates and flexible terms.";
+      case "business":
+        return "Discover business loan solutions to grow your company, from startups to established enterprises.";
+      case "debt":
+        return "Consolidate your debt with lower interest rates and simplified monthly payments.";
+      default:
+        return "Compare top loan options across US banks, from personal to auto loans, find the best fit for your needs.";
+    }
+  };
+
+  const getTabTitle = () => {
+    switch (activeTab) {
+      case "personal":
+        return "Personal Loans";
+      case "auto":
+        return "Auto Loans";
+      case "student":
+        return "Student Loans";
+      case "business":
+        return "Business Loans";
+      case "debt":
+        return "Debt Consolidation Loans";
+      default:
+        return "Loans";
+    }
+  };
+
   return (
     <div className={cn("min-h-screen bg-background flex", darkMode && "dark")}>
       {/* Sidebar */}
-      <Sidebar 
-        isCollapsed={sidebarCollapsed} 
+      <Sidebar
+        isCollapsed={sidebarCollapsed}
         onCollapsedChange={setSidebarCollapsed}
       />
 
@@ -37,25 +98,26 @@ export default function App() {
                 <div className="lg:hidden">
                   <MobileMenuButton />
                 </div>
-                <h1 className="text-2xl font-semibold">Loans</h1>
+                <h1 className="text-2xl font-semibold">{getTabTitle()}</h1>
               </div>
-              
+
               <div className="flex items-center gap-4">
                 {/* Help Tooltip */}
-                <div className="hidden lg:flex items-center gap-2 px-3 py-2 bg-primary text-primary-foreground rounded-md text-sm">
+                <div className="hidden lg:flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-blue-600 to-green-600 text-white rounded-md text-sm shadow-lg hover:shadow-xl transition-all duration-300">
                   <HelpCircle className="w-4 h-4" />
+                  {/* eslint-disable-next-line react/no-unescaped-entities */}
                   <span>Don't know which loan to choose?</span>
-                  <Button variant="secondary" size="sm" className="text-xs ml-2">
+                  <Button variant="secondary" size="sm" className="text-xs ml-2 bg-white text-blue-600 hover:bg-gray-100">
                     Get help now
                   </Button>
                 </div>
-                
+
                 {/* Dark Mode Toggle */}
                 <Button
                   variant="outline"
                   size="icon"
                   onClick={toggleDarkMode}
-                  className="w-9 h-9"
+                  className="w-9 h-9 border-blue-200 text-blue-600 hover:bg-blue-50 hover:border-blue-300 dark:border-blue-600 dark:text-blue-400 dark:hover:bg-blue-900/20"
                 >
                   {darkMode ? (
                     <Sun className="h-4 w-4" />
@@ -73,32 +135,39 @@ export default function App() {
           <div className="px-4 sm:px-6 lg:px-8 py-8">
             {/* Hero Section */}
             <div className="mb-8">
-              <h1 className="text-3xl font-semibold mb-4">Loans</h1>
+              <h1 className="text-3xl font-semibold mb-4">{getTabTitle()}</h1>
               <p className="text-muted-foreground max-w-2xl">
-                Compare top loan options across US banks, from personal to auto loans, 
-                find the best fit for your needs.
+                {getTabDescription()}
               </p>
+              <div className="mt-4 flex items-center gap-4">
+                <div className="text-sm text-muted-foreground">
+                  Showing <span className="font-medium text-blue-600">{filteredLoans.length}</span> loan{filteredLoans.length !== 1 ? "s" : ""}
+                  {activeTab !== "all" && (
+                    <span> for <span className="font-medium capitalize">{activeTab === "debt" ? "debt consolidation" : activeTab}</span></span>
+                  )}
+                </div>
+              </div>
             </div>
 
             {/* Loan Categories Tabs */}
-            <LoanTabs />
+            <LoanTabs activeTab={activeTab} onTabChange={handleTabChange} />
 
             {/* Loans Comparison Table */}
-            <div className="bg-card border border-border rounded-lg shadow-sm mb-8">
-              <LoansTable />
+            <div className="bg-card border border-border rounded-lg shadow-sm mb-8 overflow-hidden">
+              <LoansTable loans={filteredLoans} onDetailsClick={handleDetailsClick} />
             </div>
 
             {/* Loan Calculator */}
             <LoanCalculator />
 
             {/* Mobile Help Section */}
-            <div className="lg:hidden mt-8 p-4 bg-primary text-primary-foreground rounded-lg">
+            <div className="lg:hidden mt-8 p-4 bg-gradient-to-r from-blue-600 to-green-600 text-white rounded-lg shadow-lg">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <HelpCircle className="w-5 h-5" />
                   <span className="text-sm">Need help choosing?</span>
                 </div>
-                <Button variant="secondary" size="sm">
+                <Button variant="secondary" size="sm" className="bg-white text-blue-600 hover:bg-gray-100">
                   Get Help
                 </Button>
               </div>
@@ -118,6 +187,13 @@ export default function App() {
           </footer>
         </main>
       </div>
+
+      {/* Loan Details Modal */}
+      <LoanDetailsModal
+        loan={selectedLoan}
+        isOpen={isModalOpen}
+        onClose={handleModalClose}
+      />
     </div>
   );
 }

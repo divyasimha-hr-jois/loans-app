@@ -1,223 +1,317 @@
-"use client";
-
 import { useState } from "react";
-import { 
-  LayoutDashboard, 
-  CreditCard, 
-  Home, 
-  HandCoins, 
-  Shield, 
-  PiggyBank, 
-  TrendingUp, 
-  Building2, 
-  Calculator, 
-  User,
-  ChevronLeft,
-  ChevronRight,
-  Menu
-} from "lucide-react";
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { AplykaLogo } from "@/components/AplykaLogo";
+import { useAuth } from "../contexts/AuthContext";
+import {
+  Home,
+  CreditCard,
+  Building2,
+  FileText,
+  Shield,
+  TrendingUp,
+  DollarSign,
+  Users,
+  Calculator,
+  User,
+  Menu,
+  ChevronLeft,
+  ChevronRight,
+  LogOut
+} from "lucide-react";
+import { cn } from "@/lib/utils";
 
-interface NavigationItem {
-  id: string;
-  label: string;
-  icon: React.ComponentType<{ className?: string }>;
-  isActive?: boolean;
-}
-
-const navigationItems: NavigationItem[] = [
+const navigationItems = [
   {
     id: "dashboard",
     label: "Dashboard",
-    icon: LayoutDashboard,
-    isActive: false
+    icon: Home,
+    description: "Overview of your financial profile"
   },
   {
     id: "credit-cards",
     label: "Credit Cards",
     icon: CreditCard,
-    isActive: false
+    description: "Manage and apply for credit cards"
   },
   {
     id: "mortgage",
     label: "Mortgage",
-    icon: Home,
-    isActive: false
+    icon: Building2,
+    description: "Home loans and refinancing"
   },
   {
     id: "loans",
     label: "Loans",
-    icon: HandCoins,
-    isActive: true
+    icon: FileText,
+    description: "Personal, auto, and business loans"
   },
   {
     id: "insurance",
     label: "Insurance",
     icon: Shield,
-    isActive: false
+    description: "Protect your assets and income"
   },
   {
     id: "personal-finance",
-    label: "Personal finance",
-    icon: PiggyBank,
-    isActive: false
+    label: "Personal Finance",
+    icon: TrendingUp,
+    description: "Budgeting and financial planning"
   },
   {
     id: "investment",
     label: "Investment",
-    icon: TrendingUp,
-    isActive: false
+    icon: DollarSign,
+    description: "Grow your wealth with investments"
   },
   {
-    id: "smes",
+    id: "sme",
     label: "SMEs",
-    icon: Building2,
-    isActive: false
+    icon: Users,
+    description: "Small and medium enterprise solutions"
   },
   {
     id: "taxes",
     label: "Taxes",
     icon: Calculator,
-    isActive: false
+    description: "Tax planning and filing assistance"
   },
   {
     id: "profile",
     label: "Profile",
     icon: User,
-    isActive: false
+    description: "Manage your account settings"
   }
 ];
 
 interface SidebarProps {
   isCollapsed: boolean;
   onCollapsedChange: (collapsed: boolean) => void;
+  activeSection?: string;
+  onSectionChange?: (section: string) => void;
 }
 
-function SidebarContent({ isCollapsed, onCollapsedChange }: SidebarProps) {
-  const [activeItem, setActiveItem] = useState("loans");
+export function Sidebar({ isCollapsed, onCollapsedChange, activeSection = "dashboard", onSectionChange }: SidebarProps) {
+  const { user, logout } = useAuth();
 
-  return (
-    <div className={cn(
-      "flex flex-col h-full bg-white dark:bg-gray-900 border-r border-border transition-all duration-300",
-      isCollapsed ? "w-16" : "w-64"
-    )}>
+  const handleNavigation = (sectionId: string) => {
+    if (onSectionChange) {
+      onSectionChange(sectionId);
+    } else {
+      // Default behavior - log the navigation
+      console.log(`Navigate to: ${sectionId}`);
+      
+      // For demo purposes, show an alert for unimplemented sections
+      if (sectionId !== "loans" && sectionId !== "dashboard") {
+        alert(`${navigationItems.find(item => item.id === sectionId)?.label} section coming soon!`);
+      }
+    }
+  };
+
+  const SidebarContent = () => (
+    <div className="flex flex-col h-full">
       {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b border-border">
-        {!isCollapsed && (
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-              <div className="w-4 h-4 bg-white rounded-sm"></div>
-            </div>
-            <span className="font-semibold text-gray-900 dark:text-white">
-              LOGOEMPRESA
-            </span>
-          </div>
-        )}
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => onCollapsedChange(!isCollapsed)}
-          className="w-6 h-6 hidden lg:flex"
-        >
-          {isCollapsed ? (
-            <ChevronRight className="w-4 h-4" />
-          ) : (
-            <ChevronLeft className="w-4 h-4" />
-          )}
-        </Button>
+      <div className="p-4 border-b border-sidebar-border">
+        <div className="flex items-center gap-3">
+          <AplykaLogo 
+            size={isCollapsed ? "sm" : "md"} 
+            variant={isCollapsed ? "icon" : "full"}
+          />
+        </div>
       </div>
 
+      {/* User Info */}
+      {user && (
+        <div className="p-4 border-b border-sidebar-border">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 bg-gradient-aplyka-primary rounded-full flex items-center justify-center text-white text-sm font-medium">
+              {user.firstName.charAt(0)}{user.lastName.charAt(0)}
+            </div>
+            {!isCollapsed && (
+              <div className="flex-1 min-w-0">
+                <p className="font-medium text-sidebar-foreground truncate">
+                  {user.firstName} {user.lastName}
+                </p>
+                <p className="text-xs text-sidebar-foreground/60 truncate">
+                  {user.email}
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* Navigation */}
-      <nav className="flex-1 py-4">
-        <ul className="space-y-1 px-2">
-          {navigationItems.map((item) => {
-            const Icon = item.icon;
-            const isActive = activeItem === item.id;
-            
-            return (
-              <li key={item.id}>
-                <button
-                  onClick={() => setActiveItem(item.id)}
-                  className={cn(
-                    "w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors",
-                    "hover:bg-gray-100 dark:hover:bg-gray-800",
-                    isActive 
-                      ? "bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400" 
-                      : "text-gray-700 dark:text-gray-300"
-                  )}
-                >
-                  <Icon className={cn(
-                    "w-5 h-5 flex-shrink-0",
-                    isActive ? "text-blue-600 dark:text-blue-400" : "text-gray-500 dark:text-gray-400"
-                  )} />
-                  
-                  {!isCollapsed && (
-                    <>
-                      <span className="flex-1 text-left">{item.label}</span>
-                      <ChevronRight className="w-4 h-4 text-gray-400" />
-                    </>
-                  )}
-                </button>
-              </li>
-            );
-          })}
-        </ul>
-      </nav>
+      <div className="flex-1 p-4 space-y-1 overflow-y-auto">
+        {navigationItems.map((item) => {
+          const Icon = item.icon;
+          const isActive = activeSection === item.id;
+          
+          return (
+            <Button
+              key={item.id}
+              variant={isActive ? "secondary" : "ghost"}
+              className={cn(
+                "w-full justify-start h-auto p-3 transition-all duration-200",
+                isActive && "bg-aplyka-azure/10 text-aplyka-azure border-aplyka-azure/20 shadow-sm",
+                !isActive && "hover:bg-aplyka-azure/5 text-sidebar-foreground/70 hover:text-aplyka-azure",
+                isCollapsed && "px-3"
+              )}
+              onClick={() => handleNavigation(item.id)}
+            >
+              <Icon className={cn("h-4 w-4", !isCollapsed && "mr-3", isActive && "text-aplyka-azure")} />
+              {!isCollapsed && (
+                <div className="text-left">
+                  <div className="text-sm font-medium">{item.label}</div>
+                  <div className="text-xs text-muted-foreground">{item.description}</div>
+                </div>
+              )}
+            </Button>
+          );
+        })}
+      </div>
+
+      {/* Footer */}
+      <div className="p-4 border-t border-sidebar-border space-y-2">
+        {/* Collapse Toggle */}
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => onCollapsedChange(!isCollapsed)}
+          className="w-full border-aplyka-azure/20 text-aplyka-azure hover:bg-aplyka-azure/10"
+        >
+          {isCollapsed ? (
+            <ChevronRight className="h-4 w-4" />
+          ) : (
+            <>
+              <ChevronLeft className="h-4 w-4 mr-2" />
+              Collapse
+            </>
+          )}
+        </Button>
+
+        {/* Logout */}
+        {user && (
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={logout}
+            className="w-full text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700 dark:border-red-800 dark:hover:bg-red-900/20"
+          >
+            <LogOut className={cn("h-4 w-4", !isCollapsed && "mr-2")} />
+            {!isCollapsed && "Sign Out"}
+          </Button>
+        )}
+      </div>
     </div>
   );
-}
-
-export function Sidebar({ isCollapsed, onCollapsedChange }: SidebarProps) {
-  const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
     <>
       {/* Desktop Sidebar */}
-      <div className="hidden lg:block">
-        <SidebarContent 
-          isCollapsed={isCollapsed} 
-          onCollapsedChange={onCollapsedChange}
-        />
-      </div>
-
-      {/* Mobile Sidebar */}
-      <div className="lg:hidden">
-        <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
-          <SheetTrigger asChild>
-            <Button variant="ghost" size="icon" className="fixed top-4 left-4 z-50">
-              <Menu className="w-5 h-5" />
-            </Button>
-          </SheetTrigger>
-          <SheetContent side="left" className="p-0 w-64">
-            <SidebarContent 
-              isCollapsed={false} 
-              onCollapsedChange={() => {}}
-            />
-          </SheetContent>
-        </Sheet>
+      <div className={cn(
+        "hidden lg:flex flex-col bg-sidebar border-r border-sidebar-border transition-all duration-300",
+        isCollapsed ? "w-16" : "w-72"
+      )}>
+        <SidebarContent />
       </div>
     </>
   );
 }
 
-export function MobileMenuButton() {
+export function MobileMenuButton({ activeSection, onSectionChange }: { activeSection?: string; onSectionChange?: (section: string) => void }) {
+  const [isOpen, setIsOpen] = useState(false);
+  const { user, logout } = useAuth();
+
+  const handleNavigation = (sectionId: string) => {
+    if (onSectionChange) {
+      onSectionChange(sectionId);
+    } else {
+      console.log(`Navigate to: ${sectionId}`);
+      if (sectionId !== "loans" && sectionId !== "dashboard") {
+        alert(`${navigationItems.find(item => item.id === sectionId)?.label} section coming soon!`);
+      }
+    }
+    setIsOpen(false);
+  };
+
   return (
-    <div className="lg:hidden">
-      <Sheet>
-        <SheetTrigger asChild>
-          <Button variant="ghost" size="icon">
-            <Menu className="w-5 h-5" />
-          </Button>
-        </SheetTrigger>
-        <SheetContent side="left" className="p-0 w-64">
-          <SidebarContent 
-            isCollapsed={false} 
-            onCollapsedChange={() => {}}
-          />
-        </SheetContent>
-      </Sheet>
-    </div>
+    <Sheet open={isOpen} onOpenChange={setIsOpen}>
+      <SheetTrigger asChild>
+        <Button variant="outline" size="icon" className="border-aplyka-azure/20 text-aplyka-azure hover:bg-aplyka-azure/10">
+          <Menu className="h-4 w-4" />
+        </Button>
+      </SheetTrigger>
+      <SheetContent side="left" className="w-72 p-0">
+        <div className="flex flex-col h-full">
+          {/* Header */}
+          <div className="p-4 border-b">
+            <AplykaLogo size="md" />
+          </div>
+
+          {/* User Info */}
+          {user && (
+            <div className="p-4 border-b">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 bg-gradient-aplyka-primary rounded-full flex items-center justify-center text-white text-sm font-medium">
+                  {user.firstName.charAt(0)}{user.lastName.charAt(0)}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="font-medium truncate">
+                    {user.firstName} {user.lastName}
+                  </p>
+                  <p className="text-xs text-muted-foreground truncate">
+                    {user.email}
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Navigation */}
+          <div className="flex-1 p-4 space-y-1 overflow-y-auto">
+            {navigationItems.map((item) => {
+              const Icon = item.icon;
+              const isActive = activeSection === item.id;
+              
+              return (
+                <Button
+                  key={item.id}
+                  variant={isActive ? "secondary" : "ghost"}
+                  className={cn(
+                    "w-full justify-start h-auto p-3",
+                    isActive && "bg-aplyka-azure/10 text-aplyka-azure shadow-sm"
+                  )}
+                  onClick={() => handleNavigation(item.id)}
+                >
+                  <Icon className={cn("h-4 w-4 mr-3", isActive && "text-aplyka-azure")} />
+                  <div className="text-left">
+                    <div className="text-sm font-medium">{item.label}</div>
+                    <div className="text-xs text-muted-foreground">{item.description}</div>
+                  </div>
+                </Button>
+              );
+            })}
+          </div>
+
+          {/* Footer */}
+          {user && (
+            <div className="p-4 border-t">
+              <Button
+                variant="outline"
+                className="w-full text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700"
+                onClick={() => {
+                  logout();
+                  setIsOpen(false);
+                }}
+              >
+                <LogOut className="h-4 w-4 mr-2" />
+                Sign Out
+              </Button>
+            </div>
+          )}
+        </div>
+      </SheetContent>
+    </Sheet>
   );
 }

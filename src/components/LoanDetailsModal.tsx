@@ -1,24 +1,23 @@
-"use client";
-
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { CheckCircle, Clock, DollarSign, CreditCard, FileText, Calculator } from "lucide-react";
-import { LoanData } from "./LoansTable";
+import { CheckCircle, Clock, DollarSign, CreditCard, FileText, Calculator, UserPlus } from "lucide-react";
+import { LoanData } from "@/components/LoansTable";
 
 interface LoanDetailsModalProps {
   loan: LoanData | null;
   isOpen: boolean;
   onClose: () => void;
+  onSignUpClick?: () => void;
 }
 
-export function LoanDetailsModal({ loan, isOpen, onClose }: LoanDetailsModalProps) {
+export function LoanDetailsModal({ loan, isOpen, onClose, onSignUpClick }: LoanDetailsModalProps) {
   if (!loan) return null;
 
   const features = [
     "No prepayment penalty",
-    "Fast approval process",
+    "Fast approval process", 
     "Competitive interest rates",
     "Flexible repayment terms",
     "Online account management",
@@ -90,6 +89,27 @@ export function LoanDetailsModal({ loan, isOpen, onClose }: LoanDetailsModalProp
             </div>
           </div>
 
+          {/* Call to Action Banner */}
+          <div className="p-6 bg-gradient-to-r from-blue-600 to-green-600 rounded-lg text-white">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="text-xl font-semibold mb-2">Ready to Get Started?</h3>
+                <p className="text-blue-100">
+                  Join thousands of satisfied customers. Complete your application in minutes and get pre-approved today!
+                </p>
+              </div>
+              <Button 
+                onClick={onSignUpClick}
+                variant="secondary" 
+                size="lg"
+                className="bg-white text-blue-600 hover:bg-gray-100 flex items-center gap-2 shadow-lg hover:shadow-xl transition-all duration-300"
+              >
+                <UserPlus className="w-5 h-5" />
+                Sign Up Now
+              </Button>
+            </div>
+          </div>
+
           <Separator />
 
           {/* Loan Categories */}
@@ -100,8 +120,8 @@ export function LoanDetailsModal({ loan, isOpen, onClose }: LoanDetailsModalProp
             </h3>
             <div className="flex flex-wrap gap-2">
               {loan.loanType.map((type) => (
-                <Badge
-                  key={type}
+                <Badge 
+                  key={type} 
                   variant="secondary"
                   className="bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-300 capitalize"
                 >
@@ -176,19 +196,21 @@ export function LoanDetailsModal({ loan, isOpen, onClose }: LoanDetailsModalProp
 
           {/* Action Buttons */}
           <div className="flex flex-col sm:flex-row gap-3 pt-4">
-            <Button
-              className="flex-1 bg-gradient-to-r from-blue-600 to-green-600 hover:from-blue-700 hover:to-green-700 text-white shadow-lg hover:shadow-xl transition-all duration-300"
+            <Button 
+              onClick={onSignUpClick}
+              className="flex-1 bg-gradient-to-r from-blue-600 to-green-600 hover:from-blue-700 hover:to-green-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2"
             >
-              Apply Now
+              <UserPlus className="w-4 h-4" />
+              Apply Now - Sign Up
             </Button>
-            <Button
-              variant="outline"
+            <Button 
+              variant="outline" 
               className="flex-1 border-blue-200 text-blue-700 hover:bg-blue-50 hover:border-blue-300 dark:border-blue-600 dark:text-blue-400 dark:hover:bg-blue-900/20"
             >
               Save for Later
             </Button>
-            <Button
-              variant="outline"
+            <Button 
+              variant="outline" 
               className="flex-1 border-green-200 text-green-700 hover:bg-green-50 hover:border-green-300 dark:border-green-600 dark:text-green-400 dark:hover:bg-green-900/20"
             >
               Compare Rates

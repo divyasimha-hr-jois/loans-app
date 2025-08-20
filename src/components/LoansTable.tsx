@@ -199,9 +199,9 @@ export function LoansTable({ loans, onDetailsClick }: LoansTableProps) {
                 <div>{loan.term}</div>
                 <div>{loan.processingTime}</div>
                 <div>
-                  <Button
-                    variant="outline"
-                    size="sm"
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
                     className="text-xs border-blue-200 text-blue-700 hover:bg-blue-600 hover:text-white hover:border-blue-600 hover:shadow-lg transition-all duration-300 dark:border-blue-600 dark:text-blue-400 dark:hover:bg-blue-600 dark:hover:text-white"
                     onClick={() => onDetailsClick(loan)}
                   >
@@ -217,7 +217,7 @@ export function LoansTable({ loans, onDetailsClick }: LoansTableProps) {
       {/* Mobile Card View */}
       <div className="lg:hidden space-y-4 p-4">
         {loans.map((loan, index) => (
-          <Card
+          <Card 
             key={loan.id}
             className={`transition-all duration-300 hover:shadow-lg hover:scale-[1.02] ${
               index === 0 ? 'ring-2 ring-blue-500 bg-gradient-to-r from-blue-50 to-green-50 dark:from-blue-900/10 dark:to-green-900/10' : 'hover:ring-2 hover:ring-blue-200'
@@ -239,8 +239,8 @@ export function LoansTable({ loans, onDetailsClick }: LoansTableProps) {
                     )}
                   </div>
                 </div>
-                <Button
-                  variant="outline"
+                <Button 
+                  variant="outline" 
                   size="sm"
                   className="border-blue-200 text-blue-700 hover:bg-blue-600 hover:text-white hover:border-blue-600 hover:shadow-lg transition-all duration-300 dark:border-blue-600 dark:text-blue-400 dark:hover:bg-blue-600 dark:hover:text-white"
                   onClick={() => onDetailsClick(loan)}

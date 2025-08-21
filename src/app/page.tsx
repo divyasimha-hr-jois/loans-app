@@ -1,8 +1,6 @@
-import LoanRender from "@/components/LoanRender";
-
-
+import LoansApp from "@/components/LoansApp";
 
 
 export default function Home() {
-  return <LoanRender />;
+  return <LoansApp />;
 }

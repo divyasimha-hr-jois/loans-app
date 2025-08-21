@@ -155,7 +155,7 @@ export function SignUpForm() {
         else if (formData.password.length < 8) newErrors.password = "Password must be at least 8 characters";
         if (!formData.confirmPassword) newErrors.confirmPassword = "Please confirm your password";
         else if (formData.password !== formData.confirmPassword) newErrors.confirmPassword = "Passwords don't match";
-        if (!formData.termsAccepted) newErrors. termsAccepted = "You must accept the terms and conditions";
+        if (!formData.termsAccepted) newErrors.termsAccepted = "You must accept the terms and conditions";
         if (!formData.privacyAccepted) newErrors.privacyAccepted = "You must accept the privacy policy";
         break;
     }

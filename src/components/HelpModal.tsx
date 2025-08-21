@@ -1,4 +1,5 @@
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+"use client";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -91,6 +92,9 @@ export function HelpModal({ isOpen, onClose }: HelpModalProps) {
             <HelpCircle className="w-6 h-6 text-blue-600" />
             How can we help you?
           </DialogTitle>
+          <DialogDescription>
+            We're here to help you with any questions or issues you may have.
+          </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-6">

@@ -487,13 +487,13 @@ export default function LoansApp() {
                 )}
 
                 {/* Help Tooltip */}
-                <div className="hidden border border-aplyka-azure lg:flex items-center gap-2 px-3 py-2 bg-gradient-aplyka-primary dark:text-white text-black rounded-md text-sm shadow-lg hover:shadow-xl transition-all duration-300 dark:bg-gradient-aplyka-primary dark:text-white">
+                <div className="hidden lg:flex items-center gap-2 px-3 py-2 bg-gradient-aplyka-primary text-white rounded-md text-sm shadow-lg hover:shadow-xl transition-all duration-300">
                   <HelpCircle className="w-4 h-4" />
                   <span>Don't know which loan to choose?</span>
                   <Button 
                     variant="secondary" 
                     size="sm" 
-                    className="text-xs ml-2 bg-white text-aplyka-azure hover:bg-aplyka-azure/10 hover:text-aplyka-azure dark:bg-white dark:text-aplyka-azure dark:hover:bg-white/90" 
+                    className="text-xs ml-2 bg-white text-aplyka-azure hover:bg-white/90" 
                     onClick={openHelpModal}
                   >
                     Get help now

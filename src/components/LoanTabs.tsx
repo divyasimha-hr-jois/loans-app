@@ -22,7 +22,7 @@ export function LoanTabs({ activeTab, onTabChange }: LoanTabsProps) {
           key={type.id}
           onClick={() => onTabChange(type.id)}
           className={cn(
-              "px-4 py-2 rounded-md text-sm transition-all duration-200",
+            "px-4 py-2 rounded-md text-sm transition-all duration-200",
             "hover:shadow-md hover:scale-105 transform",
             activeTab === type.id
               ? "bg-blue-600 text-white hover:bg-blue-700 shadow-lg" 

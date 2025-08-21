@@ -143,6 +143,7 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
     font-family: var(--font-family);
@@ -245,8 +246,16 @@
     border-color: var(--aplyka-lime);
   }
   
+  .bg-gradient-aplyka-primary {
+    background: linear-gradient(135deg, var(--aplyka-azure) 0%, #2E8B9E 100%);
+  }
+  
+  .bg-gradient-aplyka-secondary {
+    background: linear-gradient(135deg, var(--aplyka-dark-gray) 0%, var(--aplyka-azure) 100%);
+  }
+  
   .gradient-aplyka-primary {
-    background: linear-gradient(135deg, var(--aplyka-azure) 0%, var(--aplyka-lime) 100%);
+    background: linear-gradient(135deg, var(--aplyka-azure) 0%, #2E8B9E 100%);
   }
   
   .gradient-aplyka-secondary {
